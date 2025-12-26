@@ -1,20 +1,28 @@
-import { updateSession } from "@/lib/supabase/proxy";
-import { type NextRequest } from "next/server";
+import { updateSession } from "@/supabase/middleware";
+import { type NextRequest, NextResponse } from "next/server";
+
+const publicRoutes = ["/login", "/auth", "/api/auth"];
 
 export async function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  const isPublicRoute = publicRoutes.some((route) => pathname.startsWith(route));
+
+  const accessToken = request.cookies.get("access_token")?.value;
+
+  if (!accessToken && !isPublicRoute) {
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("redirect", pathname);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  if (accessToken && pathname === "/login") {
+    return NextResponse.redirect(new URL("/dashboard/employees", request.url));
+  }
+
   return await updateSession(request);
 }
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - images - .svg, .png, .jpg, .jpeg, .gif, .webp
-     * Feel free to modify this pattern to include more paths.
-     */
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
-  ],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"],
 };

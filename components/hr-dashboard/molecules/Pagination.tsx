@@ -29,21 +29,16 @@ export function Pagination({ currentPage, totalPages, onPageChange, className }:
       >
         <ChevronRight className="h-4 w-4" />
       </Button>
-      
+
       {visiblePages[0] > 1 && (
         <>
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-8 w-8"
-            onClick={() => onPageChange(1)}
-          >
+          <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => onPageChange(1)}>
             1
           </Button>
           {visiblePages[0] > 2 && <span className="px-2 text-muted-foreground">...</span>}
         </>
       )}
-      
+
       {visiblePages.map((page) => (
         <Button
           key={page}
@@ -55,7 +50,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, className }:
           {page}
         </Button>
       ))}
-      
+
       {visiblePages[visiblePages.length - 1] < totalPages && (
         <>
           {visiblePages[visiblePages.length - 1] < totalPages - 1 && (
@@ -71,7 +66,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, className }:
           </Button>
         </>
       )}
-      
+
       <Button
         variant="outline"
         size="icon"

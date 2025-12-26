@@ -13,7 +13,14 @@ interface IconButtonProps {
   badge?: number;
 }
 
-export function IconButton({ icon: Icon, onClick, className, variant = "ghost", size = "icon", badge }: IconButtonProps) {
+export function IconButton({
+  icon: Icon,
+  onClick,
+  className,
+  variant = "ghost",
+  size = "icon",
+  badge,
+}: IconButtonProps) {
   return (
     <Button variant={variant} size={size} onClick={onClick} className={cn("relative", className)}>
       <Icon className="h-5 w-5" />

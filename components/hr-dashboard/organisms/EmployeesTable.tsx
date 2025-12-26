@@ -98,8 +98,12 @@ export function EmployeesTable({
                 <EmployeeCell name={employee.name} image={employee.image} />
               </TableCell>
               <TableCell className="text-muted-foreground">{employee.employeeId}</TableCell>
-              <TableCell className="text-muted-foreground" dir="ltr">{employee.email}</TableCell>
-              <TableCell className="text-muted-foreground" dir="ltr">{employee.phone}</TableCell>
+              <TableCell className="text-muted-foreground" dir="ltr">
+                {employee.email}
+              </TableCell>
+              <TableCell className="text-muted-foreground" dir="ltr">
+                {employee.phone}
+              </TableCell>
               <TableCell>{employee.position}</TableCell>
               <TableCell>{employee.department}</TableCell>
               <TableCell>
