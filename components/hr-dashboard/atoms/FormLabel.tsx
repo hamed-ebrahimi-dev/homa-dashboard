@@ -12,7 +12,7 @@ interface FormLabelProps {
 
 export function FormLabel({ children, required = false, className, htmlFor }: FormLabelProps) {
   return (
-    <div className={cn("flex items-center gap-1 justify-end", className)}>
+    <div className={cn("flex items-center gap-1 justify-start", className)}>
       {required && <span className="text-red-500 text-sm">*</span>}
       <Label htmlFor={htmlFor} className="text-base font-normal">
         {children}

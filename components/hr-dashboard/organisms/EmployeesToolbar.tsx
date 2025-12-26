@@ -60,7 +60,7 @@ export function EmployeesToolbar({
           </Button>
         </div>
       </div>
-      
+
       <div className="flex items-center gap-3">
         <SearchInput
           placeholder="جستجوی نام، ایمیل، شماره کارمندی..."

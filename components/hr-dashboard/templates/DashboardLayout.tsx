@@ -15,9 +15,7 @@ export function DashboardLayout({ children, activeNavItem, onNavItemClick }: Das
       <Sidebar activeItem={activeNavItem} onItemClick={onNavItemClick} />
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header />
-        <main className="flex-1 overflow-auto p-6">
-          {children}
-        </main>
+        <main className="flex-1 overflow-auto p-6">{children}</main>
       </div>
     </div>
   );

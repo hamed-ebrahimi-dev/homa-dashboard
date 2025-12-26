@@ -33,7 +33,7 @@ export function EmployeesPageTemplate({
   return (
     <div className="flex flex-col gap-6">
       <EmployeesToolbar onSearch={onSearch} onAddEmployee={onAddEmployee} />
-      
+
       <Card>
         <CardContent className="p-0">
           <EmployeesTable
@@ -46,7 +46,7 @@ export function EmployeesPageTemplate({
           />
         </CardContent>
       </Card>
-      
+
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
           نمایش {employees.length} از {totalPages * 10} کارمند

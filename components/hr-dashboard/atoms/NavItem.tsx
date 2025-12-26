@@ -11,7 +11,13 @@ interface NavItemProps {
   collapsed?: boolean;
 }
 
-export function NavItem({ icon: Icon, label, isActive = false, onClick, collapsed = false }: NavItemProps) {
+export function NavItem({
+  icon: Icon,
+  label,
+  isActive = false,
+  onClick,
+  collapsed = false,
+}: NavItemProps) {
   return (
     <button
       onClick={onClick}

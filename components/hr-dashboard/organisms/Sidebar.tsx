@@ -59,9 +59,9 @@ export function Sidebar({ activeItem = "employees", onItemClick }: SidebarProps)
           {collapsed ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
         </Button>
       </div>
-      
+
       <Separator />
-      
+
       <ScrollArea className="flex-1 px-3 py-4">
         <nav className="flex flex-col gap-1">
           {navItems.map((item) => (

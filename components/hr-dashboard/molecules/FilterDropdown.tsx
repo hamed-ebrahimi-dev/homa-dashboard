@@ -21,7 +21,13 @@ interface FilterDropdownProps {
   className?: string;
 }
 
-export function FilterDropdown({ placeholder = "انتخاب کنید", options, value, onChange, className }: FilterDropdownProps) {
+export function FilterDropdown({
+  placeholder = "انتخاب کنید",
+  options,
+  value,
+  onChange,
+  className,
+}: FilterDropdownProps) {
   return (
     <Select value={value} onValueChange={onChange}>
       <SelectTrigger className={className} dir="rtl">
