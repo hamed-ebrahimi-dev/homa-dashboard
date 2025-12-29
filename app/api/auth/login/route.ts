@@ -1,5 +1,5 @@
-import { createClient } from "@/supabase/server";
-import { loginSchema } from "@/featuer/auth/login/validation";
+import { createServerClient } from "@/src/core/lib/supabase";
+import { loginSchema } from "@/src/feature/auth/login/utils/validation";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     }
 
     const { email, password } = result.data;
-    const supabase = await createClient();
+    const supabase = await createServerClient();
 
     const { data, error } = await supabase.auth.signInWithPassword({
       email,

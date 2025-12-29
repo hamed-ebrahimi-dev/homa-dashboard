@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
-import { QueryProvider } from "@/components/providers/QueryProvider";
+import { QueryProvider } from "@/src/base/components/providers";
 import "./globals.css";
 
 const defaultUrl = process.env.VERCEL_URL
