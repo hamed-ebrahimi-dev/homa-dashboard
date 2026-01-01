@@ -13,21 +13,24 @@ interface FormInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
   ({ label, required = false, error, className, id, ...props }, ref) => {
     return (
-      <div className={cn("flex flex-col gap-1 w-full", className)} dir="rtl">
-        <div className="flex items-center gap-1 justify-end">
-          {required && <span className="text-red-500 text-sm">*</span>}
-          <Label htmlFor={id} className="text-base font-normal">
+      <div className={cn("flex flex-col gap-2 w-full", className)} dir="rtl">
+        <div className="flex items-center gap-1 justify-start">
+          {required && <span className="text-error-500 text-sm font-medium">*</span>}
+          <Label htmlFor={id} className="text-sm font-medium text-gray-700">
             {label}
           </Label>
         </div>
         <Input
           ref={ref}
           id={id}
-          className={cn("h-12 text-right pr-4", error && "border-red-500")}
+          className={cn(
+            "h-12 text-right pr-4 rounded-xl border-gray-200 focus:border-primary focus:ring-primary",
+            error && "border-error-500 focus:border-error-500 focus:ring-error-500"
+          )}
           dir="rtl"
           {...props}
         />
-        {error && <p className="text-sm text-red-500 text-right">{error}</p>}
+        {error && <p className="text-sm text-error-500 text-right">{error}</p>}
       </div>
     );
   }
