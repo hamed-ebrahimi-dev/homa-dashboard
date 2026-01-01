@@ -80,12 +80,13 @@ export function LoginForm() {
         />
 
         <div className="flex items-center justify-between">
-          <button
+          <Button
+            variant="ghost"
             type="button"
             className="text-sm text-primary font-medium hover:text-primary-700 transition-colors"
           >
             فراموشی رمز عبور؟
-          </button>
+          </Button>
 
           <div className="flex items-center gap-2">
             <Checkbox
@@ -111,12 +112,13 @@ export function LoginForm() {
       <div className="mt-8 text-center">
         <p className="text-sm text-gray-500">
           حساب کاربری ندارید؟{" "}
-          <button
+          <Button
+            variant="ghost"
             type="button"
             className="text-primary font-medium hover:text-primary-700 transition-colors"
           >
             ثبت نام کنید
-          </button>
+          </Button>
         </p>
       </div>
     </div>
