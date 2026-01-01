@@ -7,19 +7,31 @@ import { FormInput } from "@/src/feature/auth/login/components/FormInput";
 import { Button } from "@/src/base/components/ui";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import { forgetPasswordApi } from "../api/forgetPasswordApi";
+import { toast } from "sonner";
 
 export const ForgetPasswordForm = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<ForgetPasswordValidationType>({
     resolver: zodResolver(forgetPasswordValidation),
   });
 
-  const onSubmit = async (data: ForgetPasswordValidationType) => {
-    // TODO: Implement forget password API call
-    console.log(data);
+  const { mutate, isPending } = useMutation({
+    mutationFn: forgetPasswordApi,
+    onSuccess: () => {
+      toast.success("لینک بازیابی رمز عبور به ایمیل شما ارسال شد");
+    },
+    onError: (error) => {
+      toast.error(error.message || "خطا در ارسال لینک بازیابی");
+    },
+  });
+
+  const onSubmit = (data: ForgetPasswordValidationType) => {
+    mutate(data);
   };
 
   return (
@@ -35,8 +47,8 @@ export const ForgetPasswordForm = () => {
       </div>
 
       <div className="text-center space-y-3 mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">فراموشی رمز عبور</h1>
-        <p className="text-gray-500">
+        <h1 className="text-2xl font-bold text-gray-900">فراموشی رمز عبور</h1>
+        <p className="text-gray-500 text-sm">
           ایمیل خود را وارد کنید تا لینک بازیابی رمز عبور برای شما ارسال شود
         </p>
       </div>
@@ -54,7 +66,7 @@ export const ForgetPasswordForm = () => {
 
         <Button
           type="submit"
-          loading={isSubmitting}
+          loading={isPending}
           className="h-12 w-full bg-primary hover:bg-primary-600 text-white font-medium rounded-xl shadow-sm transition-all"
         >
           ارسال لینک بازیابی
