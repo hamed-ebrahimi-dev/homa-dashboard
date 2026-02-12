@@ -35,7 +35,7 @@ export const Header: FC = () => {
 
       <div className="flex items-center gap-3 h-10" dir="rtl">
         <div className="flex items-center gap-1 px-1 h-9">
-          <p className="font-medium text-base leading-[1.6] text-[#292929]">
+          <p className="font-medium text-base leading-[1.6] text-gray-850">
             {getCurrentPersianDate()}
           </p>
         </div>
@@ -44,7 +44,7 @@ export const Header: FC = () => {
 
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-[5px]">
-            <p className="font-medium text-base leading-[1.6] text-[#292929]">نیکی حسینی</p>
+            <p className="font-medium text-base leading-[1.6] text-gray-850">نیکی حسینی</p>
             <Avatar className="h-8 w-8">
               <AvatarImage src="" />
               <AvatarFallback className="bg-gray-100 text-gray-600 text-xs">ن ح</AvatarFallback>
