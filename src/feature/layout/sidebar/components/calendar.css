@@ -1,0 +1,30 @@
+/* Custom Persian Calendar Styles */
+.persian-calendar {
+  direction: rtl;
+  font-family: inherit;
+}
+
+.calendar-day {
+  transition: all 0.2s ease-in-out;
+}
+
+.calendar-day:hover {
+  transform: scale(1.05);
+}
+
+.calendar-day.today {
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.calendar-header {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+.month-nav-button {
+  transition: all 0.2s ease;
+}
+
+.month-nav-button:hover {
+  background-color: rgba(59, 130, 246, 0.1);
+  transform: scale(1.1);
+}

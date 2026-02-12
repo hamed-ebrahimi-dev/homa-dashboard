@@ -2,7 +2,7 @@
 
 import { forwardRef } from "react";
 import { Input, Label } from "@/src/base/components/ui";
-import { cn } from "@/src/base/utils/cn";
+import { cn } from "@/lib/utils/cn";
 
 interface FormInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
