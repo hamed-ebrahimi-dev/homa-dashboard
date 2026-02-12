@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { Dashboard } from "@/src/feature/dashboard";
 
 export default function Home() {
-  return <></>;
+  return <Dashboard />;
 }
