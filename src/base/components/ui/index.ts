@@ -10,3 +10,5 @@ export * from "./select";
 export * from "./separator";
 export * from "./table";
 export * from "./scroll-area";
+export * from "./sidebar";
+export * from "./collapsible";

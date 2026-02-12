@@ -26,7 +26,7 @@ export function LoginForm() {
   const { mutate, isPending, error } = useMutation({
     mutationFn: loginApi,
     onSuccess: () => {
-      router.push("/dashboard");
+      router.push("/");
     },
   });
 
