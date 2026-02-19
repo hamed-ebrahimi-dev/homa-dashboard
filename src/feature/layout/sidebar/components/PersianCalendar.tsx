@@ -36,9 +36,9 @@ const generateCalendarDays = () => {
       const day = current.clone();
       week.push({
         day: day.jDate(),
-        isCurrentMonth: day.isSame(now, "jMonth"),
+        isCurrentMonth: day.isSame(now, "jMonth" as any),
         isToday: day.isSame(now, "day"),
-        isFriday: day.day() === 5, // جمعه
+        isFriday: day.day() === 5,
         date: day,
       });
       current.add(1, "day");
