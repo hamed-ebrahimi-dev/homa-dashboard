@@ -13,3 +13,4 @@ export * from "./scroll-area";
 export * from "./sidebar";
 export * from "./collapsible";
 export * from "./file-uploader";
+export * from "./textarea";
