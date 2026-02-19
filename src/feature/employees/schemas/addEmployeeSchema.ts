@@ -10,10 +10,15 @@ export const personalInfoSchema = z.object({
 });
 
 export const educationSchema = z.object({
-  degree: z.string().min(1, "مدرک تحصیلی الزامی است"),
-  field: z.string().min(1, "رشته تحصیلی الزامی است"),
-  university: z.string().min(1, "دانشگاه الزامی است"),
-  graduationYear: z.string().min(1, "سال فارغ‌التحصیلی الزامی است"),
+  educations: z.array(
+    z.object({
+      degree: z.string().min(1, "مدرک تحصیلی الزامی است"),
+      field: z.string().min(1, "رشته تحصیلی الزامی است"),
+      university: z.string().min(1, "نام آموزشگاه الزامی است"),
+      gpa: z.string().min(1, "معدل الزامی است"),
+      certificate: z.any().optional(),
+    })
+  ),
 });
 
 export const employmentSchema = z.object({

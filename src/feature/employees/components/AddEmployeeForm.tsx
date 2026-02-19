@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft, Trash2 } from "lucide-react";
@@ -18,48 +18,24 @@ const FORM_STEPS = [
   { label: "سوابق شغلی", image: "/assets/image/interview section.png" },
 ];
 
-const STORAGE_KEY = "employee-form-state";
-
-type SavedFormState = {
-  currentStep: number;
-  formValues: Partial<AddEmployeeFormData>;
-};
-
 export const AddEmployeeForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
 
   const methods = useForm<AddEmployeeFormData>({
     resolver: zodResolver(addEmployeeSchema),
     mode: "onChange",
+    defaultValues: {
+      educations: [
+        {
+          degree: "",
+          field: "",
+          university: "",
+          gpa: "",
+          certificate: undefined,
+        },
+      ],
+    },
   });
-
-  useEffect(() => {
-    const savedState = localStorage.getItem(STORAGE_KEY);
-    if (savedState) {
-      try {
-        const { currentStep: savedStep, formValues } = JSON.parse(savedState) as SavedFormState;
-        setCurrentStep(savedStep);
-        methods.reset(formValues);
-      } catch (error) {
-        console.error("Failed to restore form state:", error);
-      }
-    }
-  }, [methods]);
-
-  const saveFormState = (step: number) => {
-    const formValues = methods.getValues();
-    const state: SavedFormState = {
-      currentStep: step,
-      formValues,
-    };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  };
-
-  const clearFormState = () => {
-    localStorage.removeItem(STORAGE_KEY);
-    methods.reset();
-    setCurrentStep(0);
-  };
 
   const nextStep = async () => {
     let fieldsToValidate: (keyof AddEmployeeFormData)[] = [];
@@ -67,7 +43,7 @@ export const AddEmployeeForm = () => {
     if (currentStep === 0) {
       fieldsToValidate = ["firstName", "lastName", "nationalCode", "phone", "address"];
     } else if (currentStep === 1) {
-      fieldsToValidate = ["degree", "field", "university", "graduationYear"];
+      fieldsToValidate = ["educations"];
     } else if (currentStep === 2) {
       fieldsToValidate = ["position", "department", "employmentType", "startDate", "salary"];
     }
@@ -79,24 +55,26 @@ export const AddEmployeeForm = () => {
     }
 
     if (currentStep < FORM_STEPS.length - 1) {
-      const nextStepIndex = currentStep + 1;
-      setCurrentStep(nextStepIndex);
-      saveFormState(nextStepIndex);
+      setCurrentStep(currentStep + 1);
     }
   };
 
   const previousStep = () => {
     if (currentStep > 0) {
-      const prevStepIndex = currentStep - 1;
-      setCurrentStep(prevStepIndex);
-      saveFormState(prevStepIndex);
+      setCurrentStep(currentStep - 1);
     }
+  };
+
+  const clearForm = () => {
+    methods.reset();
+    setCurrentStep(0);
   };
 
   const onSubmit = async (data: AddEmployeeFormData) => {
     try {
       console.log("Final form data:", data);
-      clearFormState();
+      methods.reset();
+      setCurrentStep(0);
     } catch (error) {
       console.error("Form submission error:", error);
     }
@@ -135,7 +113,7 @@ export const AddEmployeeForm = () => {
                   <Button
                     type="button"
                     variant="ghost"
-                    onClick={clearFormState}
+                    onClick={clearForm}
                     className="h-[48px] px-6 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-[12px]"
                   >
                     <Trash2 className="w-5 h-5 ml-2" />
