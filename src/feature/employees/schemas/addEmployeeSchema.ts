@@ -7,6 +7,7 @@ export const personalInfoSchema = z.object({
   phone: z.string().min(11, "شماره تماس باید ۱۱ رقم باشد"),
   address: z.string().min(10, "آدرس باید حداقل ۱۰ کاراکتر باشد"),
   image: z.any().optional(),
+  imageUrl: z.string().optional(),
 });
 
 export const educationSchema = z.object({
@@ -17,6 +18,7 @@ export const educationSchema = z.object({
       university: z.string().min(1, "نام آموزشگاه الزامی است"),
       gpa: z.string().min(1, "معدل الزامی است"),
       certificate: z.any().optional(),
+      certificateUrl: z.string().optional(),
     })
   ),
 });

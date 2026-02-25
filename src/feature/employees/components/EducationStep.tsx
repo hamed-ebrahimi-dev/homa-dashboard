@@ -1,6 +1,7 @@
 "use client";
 
 import { useFormContext, useFieldArray } from "react-hook-form";
+import { useMutation } from "@tanstack/react-query";
 import { AddEmployeeFormData } from "../schemas/addEmployeeSchema";
 import { Input } from "@/src/base/components/ui/input";
 import { Label } from "@/src/base/components/ui/label";
@@ -14,6 +15,9 @@ import {
 import { FileUploader } from "@/src/base/components/ui/file-uploader";
 import { Plus, Trash2 } from "lucide-react";
 import { Button } from "@/src/base/components/ui/button";
+import { uploadFile } from "../api/uploadFile";
+import { toast } from "sonner";
+import { useState } from "react";
 
 export const EducationStep = () => {
   const {
@@ -27,6 +31,31 @@ export const EducationStep = () => {
     control,
     name: "educations",
   });
+
+  const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
+
+  const uploadMutation = useMutation({
+    mutationFn: uploadFile,
+    onSuccess: (data, variables, context: any) => {
+      const index = context.index;
+      setValue(`educations.${index}.certificateUrl`, data.url);
+      toast.success("مدرک با موفقیت آپلود شد");
+      setUploadingIndex(null);
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "خطا در آپلود مدرک");
+      setUploadingIndex(null);
+    },
+  });
+
+  const handleFileSelect = (files: File[], index: number) => {
+    if (files.length > 0) {
+      const file = files[0];
+      setValue(`educations.${index}.certificate`, file);
+      setUploadingIndex(index);
+      uploadMutation.mutate(file, { context: { index } } as any);
+    }
+  };
 
   const addEducation = () => {
     append({
@@ -153,15 +182,20 @@ export const EducationStep = () => {
             <div className="space-y-2">
               <Label className="text-right text-[14px] text-[#6F767E]">بارگذاری مدرک تحصیلی</Label>
               <FileUploader
-                maxFiles={5}
+                maxFiles={1}
                 maxSize={5 * 1024 * 1024}
                 accept=".pdf,.jpg,.jpeg,.png"
-                onFileSelect={(files) => {
-                  if (files.length > 0) {
-                    setValue(`educations.${index}.certificate`, files);
-                  }
-                }}
+                onFileSelect={(files) => handleFileSelect(files, index)}
+                disabled={uploadingIndex === index}
               />
+              {uploadingIndex === index && (
+                <p className="text-[12px] text-blue-500 text-right">در حال آپلود...</p>
+              )}
+              {uploadMutation.isError && uploadingIndex === index && (
+                <p className="text-[12px] text-red-500 text-right">
+                  {uploadMutation.error.message}
+                </p>
+              )}
             </div>
           </div>
         ))}
