@@ -1,79 +1,48 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/src/core/lib/supabase/server";
 
-export async function POST(req: NextRequest) {
+export async function GET(req: NextRequest) {
   try {
-    const body = await req.json();
-    const {
-      firstName,
-      lastName,
-      nationalCode,
-      phone,
-      address,
-      imageUrl,
-      position,
-      department,
-      employmentType,
-      startDate,
-      salary,
-      educations,
-    } = body;
+    const { searchParams } = new URL(req.url);
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = parseInt(searchParams.get("limit") || "10");
+    const search = searchParams.get("search") || "";
 
     const supabase = await createClient();
 
-    const { data: employee, error: employeeError } = await supabase
+    let query = supabase
       .from("employees")
-      .insert({
-        first_name: firstName,
-        last_name: lastName,
-        national_code: nationalCode,
-        phone,
-        address,
-        image_url: imageUrl,
-        position,
-        department,
-        employment_type: employmentType,
-        start_date: startDate,
-        salary,
-      })
-      .select()
-      .single();
+      .select("*, employee_educations(*)", { count: "exact" })
+      .order("created_at", { ascending: false });
 
-    if (employeeError) {
-      console.error("Employee insert error:", employeeError);
+    if (search) {
+      query = query.or(
+        `first_name.ilike.%${search}%,last_name.ilike.%${search}%,email.ilike.%${search}%`
+      );
+    }
+
+    const from = (page - 1) * limit;
+    const to = from + limit - 1;
+
+    const { data, error, count } = await query.range(from, to);
+
+    if (error) {
+      console.error("Employees fetch error:", error);
       return NextResponse.json(
-        { error: "Failed to create employee", details: employeeError.message },
+        { error: "Failed to fetch employees", details: error.message },
         { status: 500 }
       );
     }
 
-    if (educations && educations.length > 0) {
-      const educationRecords = educations.map((edu: any) => ({
-        employee_id: employee.id,
-        degree: edu.degree,
-        field: edu.field,
-        university: edu.university,
-        gpa: edu.gpa,
-        certificate_url: edu.certificateUrl,
-      }));
-
-      const { error: educationError } = await supabase
-        .from("employee_educations")
-        .insert(educationRecords);
-
-      if (educationError) {
-        console.error("Education insert error:", educationError);
-        return NextResponse.json(
-          { error: "Failed to create education records", details: educationError.message },
-          { status: 500 }
-        );
-      }
-    }
-
     return NextResponse.json({
       success: true,
-      message: "Employee created successfully",
-      data: employee,
+      data: data || [],
+      pagination: {
+        page,
+        limit,
+        total: count || 0,
+        totalPages: Math.ceil((count || 0) / limit),
+      },
     });
   } catch (error) {
     console.error("Server error:", error);
