@@ -1,16 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { ChevronLeft, Trash2 } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { FormBreadcrumb } from "./formBreadcrumb";
 import { PersonalInfoStep } from "./PersonalInfoStep";
 import { Button } from "@/src/base/components/ui/button";
 import { addEmployeeSchema, type AddEmployeeFormData } from "../schemas/addEmployeeSchema";
 import { EducationStep } from "./EducationStep";
 import { EmploymentStep } from "./EmploymentStep";
+import { createEmployee } from "../api/createEmployee";
+import { toast } from "sonner";
 
 const FORM_STEPS = [
   { label: "اطلاعات شخصی", image: "/assets/image/addEmployeesImage.png" },
@@ -18,48 +22,38 @@ const FORM_STEPS = [
   { label: "سوابق شغلی", image: "/assets/image/interview section.png" },
 ];
 
-const STORAGE_KEY = "employee-form-state";
-
-type SavedFormState = {
-  currentStep: number;
-  formValues: Partial<AddEmployeeFormData>;
-};
-
 export const AddEmployeeForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
+  const router = useRouter();
 
   const methods = useForm<AddEmployeeFormData>({
     resolver: zodResolver(addEmployeeSchema),
     mode: "onChange",
+    defaultValues: {
+      educations: [
+        {
+          degree: "",
+          field: "",
+          university: "",
+          gpa: "",
+          certificate: undefined,
+        },
+      ],
+    },
   });
 
-  useEffect(() => {
-    const savedState = localStorage.getItem(STORAGE_KEY);
-    if (savedState) {
-      try {
-        const { currentStep: savedStep, formValues } = JSON.parse(savedState) as SavedFormState;
-        setCurrentStep(savedStep);
-        methods.reset(formValues);
-      } catch (error) {
-        console.error("Failed to restore form state:", error);
-      }
-    }
-  }, [methods]);
-
-  const saveFormState = (step: number) => {
-    const formValues = methods.getValues();
-    const state: SavedFormState = {
-      currentStep: step,
-      formValues,
-    };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  };
-
-  const clearFormState = () => {
-    localStorage.removeItem(STORAGE_KEY);
-    methods.reset();
-    setCurrentStep(0);
-  };
+  const createMutation = useMutation({
+    mutationFn: createEmployee,
+    onSuccess: () => {
+      toast.success("کارمند با موفقیت ثبت شد");
+      methods.reset();
+      setCurrentStep(0);
+      router.push("/");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "خطا در ثبت کارمند");
+    },
+  });
 
   const nextStep = async () => {
     let fieldsToValidate: (keyof AddEmployeeFormData)[] = [];
@@ -67,7 +61,7 @@ export const AddEmployeeForm = () => {
     if (currentStep === 0) {
       fieldsToValidate = ["firstName", "lastName", "nationalCode", "phone", "address"];
     } else if (currentStep === 1) {
-      fieldsToValidate = ["degree", "field", "university", "graduationYear"];
+      fieldsToValidate = ["educations"];
     } else if (currentStep === 2) {
       fieldsToValidate = ["position", "department", "employmentType", "startDate", "salary"];
     }
@@ -79,27 +73,23 @@ export const AddEmployeeForm = () => {
     }
 
     if (currentStep < FORM_STEPS.length - 1) {
-      const nextStepIndex = currentStep + 1;
-      setCurrentStep(nextStepIndex);
-      saveFormState(nextStepIndex);
+      setCurrentStep(currentStep + 1);
     }
   };
 
   const previousStep = () => {
     if (currentStep > 0) {
-      const prevStepIndex = currentStep - 1;
-      setCurrentStep(prevStepIndex);
-      saveFormState(prevStepIndex);
+      setCurrentStep(currentStep - 1);
     }
   };
 
+  const clearForm = () => {
+    methods.reset();
+    setCurrentStep(0);
+  };
+
   const onSubmit = async (data: AddEmployeeFormData) => {
-    try {
-      console.log("Final form data:", data);
-      clearFormState();
-    } catch (error) {
-      console.error("Form submission error:", error);
-    }
+    createMutation.mutate(data);
   };
 
   return (
@@ -135,7 +125,7 @@ export const AddEmployeeForm = () => {
                   <Button
                     type="button"
                     variant="ghost"
-                    onClick={clearFormState}
+                    onClick={clearForm}
                     className="h-[48px] px-6 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-[12px]"
                   >
                     <Trash2 className="w-5 h-5 ml-2" />
@@ -157,9 +147,10 @@ export const AddEmployeeForm = () => {
                     {currentStep === FORM_STEPS.length - 1 ? (
                       <Button
                         type="submit"
-                        className="bg-primary-600 hover:bg-primary-700 h-[48px] px-8 rounded-[12px]"
+                        disabled={createMutation.isPending}
+                        className="bg-primary-600 hover:bg-primary-700 h-[48px] px-8 rounded-[12px] disabled:opacity-50"
                       >
-                        ذخیره و ادامه
+                        {createMutation.isPending ? "در حال ذخیره..." : "ذخیره و ادامه"}
                         <ChevronLeft className="w-5 h-5 mr-2" />
                       </Button>
                     ) : (

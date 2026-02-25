@@ -10,6 +10,7 @@ interface FileUploaderProps {
   maxSize?: number;
   accept?: string;
   className?: string;
+  disabled?: boolean;
 }
 
 export const FileUploader = ({
@@ -18,6 +19,7 @@ export const FileUploader = ({
   maxSize = 10 * 1024 * 1024,
   accept = "*",
   className,
+  disabled = false,
 }: FileUploaderProps) => {
   const [files, setFiles] = useState<File[]>([]);
   const [isDragging, setIsDragging] = useState(false);
@@ -67,7 +69,8 @@ export const FileUploader = ({
         onDragLeave={() => setIsDragging(false)}
         className={cn(
           "border-2 border-dashed rounded-[16px] p-8 text-center transition-colors",
-          isDragging ? "border-primary-600 bg-primary-50" : "border-gray-200 bg-gray-50"
+          isDragging ? "border-primary-600 bg-primary-50" : "border-gray-200 bg-gray-50",
+          disabled && "opacity-50 pointer-events-none"
         )}
       >
         <div className="flex flex-col items-center gap-4">
@@ -86,6 +89,7 @@ export const FileUploader = ({
                   accept={accept}
                   onChange={handleFileInput}
                   className="hidden"
+                  disabled={disabled}
                 />
               </label>
             </p>

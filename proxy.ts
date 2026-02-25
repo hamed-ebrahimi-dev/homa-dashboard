@@ -4,14 +4,14 @@ import { updateSession } from "@/src/core/lib/supabase/middleware";
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const publicPaths = ["/auth", "/api"];
+  const publicPaths = ["/auth"];
   const isPublicPath = publicPaths.some((path) => pathname.startsWith(path));
 
   const supabaseResponse = await updateSession(request);
 
   const token = request.cookies.get("access_token")?.value;
 
-  if (!token && !isPublicPath) {
+  if (!token && !isPublicPath && !pathname.startsWith("/api")) {
     const loginUrl = new URL("/auth/login", request.url);
     loginUrl.searchParams.set("redirect", pathname);
     return NextResponse.redirect(loginUrl);

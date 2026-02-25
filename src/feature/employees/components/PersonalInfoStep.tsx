@@ -1,11 +1,14 @@
 "use client";
 
 import { useFormContext } from "react-hook-form";
+import { useMutation } from "@tanstack/react-query";
 import { AddEmployeeFormData } from "../schemas/addEmployeeSchema";
 import { Input } from "@/src/base/components/ui/input";
 import { Label } from "@/src/base/components/ui/label";
 import { Textarea } from "@/src/base/components/ui/textarea";
 import { FileUploader } from "@/src/base/components/ui/file-uploader";
+import { uploadFile } from "../api/uploadFile";
+import { toast } from "sonner";
 
 export const PersonalInfoStep = () => {
   const {
@@ -13,6 +16,25 @@ export const PersonalInfoStep = () => {
     formState: { errors },
     setValue,
   } = useFormContext<AddEmployeeFormData>();
+
+  const uploadMutation = useMutation({
+    mutationFn: uploadFile,
+    onSuccess: (data) => {
+      setValue("imageUrl", data.url);
+      toast.success("تصویر با موفقیت آپلود شد");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "خطا در آپلود تصویر");
+    },
+  });
+
+  const handleFileSelect = (files: File[]) => {
+    if (files.length > 0) {
+      const file = files[0];
+      setValue("image", file);
+      uploadMutation.mutate(file);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -105,12 +127,15 @@ export const PersonalInfoStep = () => {
           maxFiles={1}
           maxSize={5 * 1024 * 1024}
           accept="image/*"
-          onFileSelect={(files) => {
-            if (files.length > 0) {
-              setValue("image", files[0]);
-            }
-          }}
+          onFileSelect={handleFileSelect}
+          disabled={uploadMutation.isPending}
         />
+        {uploadMutation.isPending && (
+          <p className="text-[12px] text-blue-500 text-right">در حال آپلود...</p>
+        )}
+        {uploadMutation.isError && (
+          <p className="text-[12px] text-red-500 text-right">{uploadMutation.error.message}</p>
+        )}
       </div>
     </div>
   );
