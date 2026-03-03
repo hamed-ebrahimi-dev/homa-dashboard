@@ -1,6 +1,7 @@
 "use client";
 
 import { FC, useState } from "react";
+import Link from "next/link";
 import {
   Button,
   Collapsible,
@@ -159,26 +160,30 @@ export const AppSidebar: FC = () => {
                     <div className="mt-1 space-y-1">
                       {item.items.map((subItem) => (
                         <div key={subItem.title} className="flex justify-start mr-4">
-                          <Button
-                            variant="ghost"
-                            className="text-right hover:bg-gray-50 text-gray-600 px-4"
-                          >
-                            <span>{subItem.title}</span>
-                          </Button>
+                          <Link href={subItem.url}>
+                            <Button
+                              variant="ghost"
+                              className="text-right hover:bg-gray-50 text-gray-600 px-4"
+                            >
+                              <span>{subItem.title}</span>
+                            </Button>
+                          </Link>
                         </div>
                       ))}
                     </div>
                   </CollapsibleContent>
                 </Collapsible>
               ) : (
-                <div className="flex gap-3 h-14 items-center px-4 py-2 rounded-lg w-full cursor-pointer hover:bg-gray-50">
-                  <div className="h-6 w-6 flex items-center justify-center">
-                    <item.icon className="h-4 w-4 text-gray-700" />
+                <Link href={item.url}>
+                  <div className="flex gap-3 h-14 items-center px-4 py-2 rounded-lg w-full cursor-pointer hover:bg-gray-50">
+                    <div className="h-6 w-6 flex items-center justify-center">
+                      <item.icon className="h-4 w-4 text-gray-700" />
+                    </div>
+                    <p className="font-normal text-lg leading-[1.6] text-gray-900 text-right flex-1">
+                      {item.title}
+                    </p>
                   </div>
-                  <p className="font-normal text-lg leading-[1.6] text-gray-900 text-right flex-1">
-                    {item.title}
-                  </p>
-                </div>
+                </Link>
               )}
             </div>
           ))}
@@ -215,26 +220,30 @@ export const AppSidebar: FC = () => {
                         <div className="mt-1 space-y-1">
                           {item.items.map((subItem) => (
                             <div key={subItem.title} className="flex justify-end pr-12">
-                              <Button
-                                variant="ghost"
-                                className="text-right hover:bg-gray-50 text-gray-600 px-4"
-                              >
-                                <span>{subItem.title}</span>
-                              </Button>
+                              <Link href={subItem.url}>
+                                <Button
+                                  variant="ghost"
+                                  className="text-right hover:bg-gray-50 text-gray-600 px-4"
+                                >
+                                  <span>{subItem.title}</span>
+                                </Button>
+                              </Link>
                             </div>
                           ))}
                         </div>
                       </CollapsibleContent>
                     </Collapsible>
                   ) : (
-                    <div className="flex gap-3 h-14 items-center px-4 py-2 rounded-lg w-full cursor-pointer hover:bg-gray-50">
-                      <div className="h-5 w-5 flex items-center justify-center">
-                        <item.icon className="h-4 w-4 text-gray-700" />
+                    <Link href={item.url}>
+                      <div className="flex gap-3 h-14 items-center px-4 py-2 rounded-lg w-full cursor-pointer hover:bg-gray-50">
+                        <div className="h-5 w-5 flex items-center justify-center">
+                          <item.icon className="h-4 w-4 text-gray-700" />
+                        </div>
+                        <p className="font-normal text-lg leading-[1.6] text-gray-900 text-right flex-1">
+                          {item.title}
+                        </p>
                       </div>
-                      <p className="font-normal text-lg leading-[1.6] text-gray-900 text-right flex-1">
-                        {item.title}
-                      </p>
-                    </div>
+                    </Link>
                   )}
                 </div>
               ))}
