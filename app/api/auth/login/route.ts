@@ -30,28 +30,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "ایمیل یا رمز عبور اشتباه است" }, { status: 401 });
     }
 
-    const response = NextResponse.json(
-      { message: "ورود موفقیت‌آمیز", user: data.user },
-      { status: 200 }
-    );
-
-    response.cookies.set("access_token", data.session.access_token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 7,
-      path: "/",
-    });
-
-    response.cookies.set("refresh_token", data.session.refresh_token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 30,
-      path: "/",
-    });
-
-    return response;
+    return NextResponse.json({ message: "ورود موفقیت‌آمیز", user: data.user }, { status: 200 });
   } catch {
     return NextResponse.json({ error: "خطای سرور" }, { status: 500 });
   }

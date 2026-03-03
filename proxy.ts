@@ -9,16 +9,28 @@ export async function proxy(request: NextRequest) {
 
   const supabaseResponse = await updateSession(request);
 
-  const token = request.cookies.get("access_token")?.value;
+  if (!isPublicPath && !pathname.startsWith("/api")) {
+    const { cookies } = request;
+    const hasSession = cookies
+      .getAll()
+      .some((cookie) => cookie.name.startsWith("sb-") && cookie.name.includes("auth-token"));
 
-  if (!token && !isPublicPath && !pathname.startsWith("/api")) {
-    const loginUrl = new URL("/auth/login", request.url);
-    loginUrl.searchParams.set("redirect", pathname);
-    return NextResponse.redirect(loginUrl);
+    if (!hasSession) {
+      const loginUrl = new URL("/auth/login", request.url);
+      loginUrl.searchParams.set("redirect", pathname);
+      return NextResponse.redirect(loginUrl);
+    }
   }
 
-  if (token && isPublicPath) {
-    return NextResponse.redirect(new URL("/", request.url));
+  if (isPublicPath) {
+    const { cookies } = request;
+    const hasSession = cookies
+      .getAll()
+      .some((cookie) => cookie.name.startsWith("sb-") && cookie.name.includes("auth-token"));
+
+    if (hasSession) {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
   }
 
   return supabaseResponse;
