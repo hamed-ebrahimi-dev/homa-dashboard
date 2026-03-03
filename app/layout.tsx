@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
-import { QueryProvider } from "@/src/base/components/providers";
+import { QueryProvider, AuthProvider } from "@/src/base/components/providers";
 import "./globals.css";
 import { SidebarProvider } from "@/src/base/components/ui";
 import { Header } from "@/src/feature/layout/header";
@@ -24,16 +24,18 @@ export default function RootLayout({
     <html lang="fa" dir="rtl" suppressHydrationWarning>
       <body className="antialiased w-full min-h-screen">
         <QueryProvider>
-          <SidebarProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="light"
-              enableSystem
-              disableTransitionOnChange
-            >
-              {children}
-            </ThemeProvider>
-          </SidebarProvider>
+          <AuthProvider>
+            <SidebarProvider>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="light"
+                enableSystem
+                disableTransitionOnChange
+              >
+                {children}
+              </ThemeProvider>
+            </SidebarProvider>
+          </AuthProvider>
         </QueryProvider>
       </body>
     </html>
